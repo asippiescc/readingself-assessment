@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reading Self-Check | St. Charles Community College</title>
+<style>
+  :root {
+    --navy: #1f2d3d;
+    --bg: #faf8f4;
+    --card: #ffffff;
+    --ink: #1f2d3d;
+    --muted: #5b6673;
+    --line: #e3dfd6;
+    --band-low: #efece4;
+    --band-mid: #dedacb;
+    --a: #0f6e63; --a-tint: #e1f0ed;
+    --b: #2a5599; --b-tint: #e3eaf6;
+    --c: #b5501a; --c-tint: #f9e8dc;
+    --d: #6a3d8f; --d-tint: #ece3f3;
+    --focus: #f2a900;
+    --on: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141b24;
+      --card: #1c2531;
+      --ink: #eef1f5;
+      --muted: #a4afbd;
+      --line: #324052;
+      --band-low: #243040;
+      --band-mid: #2d3a4b;
+      --a: #4fc4b3; --a-tint: #17302f;
+      --b: #7ea6ec; --b-tint: #1b2a45;
+      --c: #f0955e; --c-tint: #3a2519;
+      --d: #c29be6; --d-tint: #2c2038;
+    --on: #11161d;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  header.hero {
+    background: #1f2d3d;
+    color: #fff;
+    padding: 2.5rem 1.25rem 2.25rem;
+  }
+  .wrap { max-width: 52rem; margin: 0 auto; }
+  .hero .program { margin: 0 0 .5rem; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+  .hero h1 { margin: 0; font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1.05; font-weight: 800; }
+  .hero p.sub { margin: .75rem 0 0; font-size: 1.1rem; max-width: 36rem; }
+  main { padding: 1.5rem 1.25rem 3rem; }
+  .intro { margin: 0 0 1rem; max-width: 42rem; }
+
+  .scale { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: 0 0 1.25rem; list-style: none; }
+  .sec .scale { margin: 0; padding: .65rem 1.1rem; border-bottom: 1px solid var(--line); gap: .4rem; }
+  .sec .scale li { font-size: .85rem; padding: .1rem .65rem; }
+  .scale li { border: 1px solid var(--muted); border-radius: 999px; padding: .15rem .8rem; font-size: .95rem; }
+  .scale b { font-weight: 700; }
+
+  .bands { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-bottom: 1.75rem; }
+  .band { border-radius: 10px; padding: .85rem 1rem; font-size: .95rem; }
+  .band strong.range { display: block; font-size: 1.4rem; line-height: 1.2; margin-bottom: .15rem; }
+  .band.low { background: var(--band-low); }
+  .band.mid { background: var(--band-mid); }
+  .band.high { background: #1f2d3d; color: #fff; }
+  @media (max-width: 40rem) { .bands { grid-template-columns: 1fr; } }
+
+  .progress { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: .6rem 0; margin-bottom: .75rem; border-bottom: 1px solid var(--line); }
+  .progress-row { display: flex; justify-content: space-between; font-size: .9rem; color: var(--muted); margin-bottom: .35rem; }
+  .bar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--navy); transition: width .25s; }
+  @media (prefers-color-scheme: dark) { .bar > span { background: #7ea6ec; } }
+
+  section.sec { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; }
+  .sec-head { display: flex; align-items: center; gap: .75rem; padding: .85rem 1.1rem; border-bottom: 3px solid var(--accent); background: var(--tint); }
+  .badge { flex: none; width: 2rem; height: 2rem; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; }
+  @media (prefers-color-scheme: dark) { .badge { color: #11161d; } }
+  .sec-head h2 { margin: 0; font-size: 1.3rem; }
+  .sec-head .lead { margin-left: auto; color: var(--muted); font-size: .9rem; }
+  @media (max-width: 36rem) { .sec-head .lead { display: none; } }
+
+  fieldset.q { border: 0; border-bottom: 1px solid var(--line); margin: 0; padding: .9rem 1.1rem; display: grid; grid-template-columns: 1fr auto; gap: .5rem 1rem; align-items: center; }
+  fieldset.q:last-of-type { border-bottom: 0; }
+  fieldset.q.missing { background: #fff1f0; outline: 2px solid #c0392b; outline-offset: -2px; }
+  @media (prefers-color-scheme: dark) { fieldset.q.missing { background: #3a1d1d; } }
+  legend { float: left; width: 100%; padding: 0; }
+  .qtext { display: flex; gap: .75rem; }
+  .qid { flex: none; font-weight: 700; color: var(--accent); min-width: 1.8rem; }
+  .opts { display: flex; gap: .45rem; }
+  .opts label { position: relative; }
+  .opts input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .opts span {
+    display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%;
+    border: 1.5px solid var(--accent); color: var(--accent); font-weight: 600; background: transparent; transition: background .12s, color .12s;
+  }
+  .opts input:hover + span { background: var(--tint); }
+  .opts input:checked + span { background: var(--accent); color: #fff; }
+  @media (prefers-color-scheme: dark) { .opts input:checked + span { color: #11161d; } }
+  .opts input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+  @media (max-width: 36rem) {
+    fieldset.q { grid-template-columns: 1fr; }
+    .opts { justify-content: space-between; }
+    .opts span { width: 3rem; height: 3rem; }
+  }
+  /* legend + grid: put legend text in first column */
+  fieldset.q { display: grid; }
+  fieldset.q legend { grid-column: 1; float: none; width: auto; }
+  fieldset.q .opts { grid-column: 2; }
+  @media (max-width: 36rem) { fieldset.q .opts { grid-column: 1; } }
+
+  .sec-foot { padding: .75rem 1.1rem; background: var(--band-low); text-align: right; font-size: .95rem; color: var(--muted); }
+  .sec-foot b { color: var(--ink); }
+
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1.5rem; }
+  button { font: inherit; cursor: pointer; border-radius: 8px; padding: .75rem 1.4rem; font-weight: 700; border: 2px solid var(--navy); }
+  button.primary { background: var(--navy); color: #fff; }
+  button.secondary { background: transparent; color: var(--ink); border-color: var(--muted); }
+  @media (prefers-color-scheme: dark) { button.primary { background: #7ea6ec; color: #11161d; border-color: #7ea6ec; } }
+  button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  #error { color: #b3261e; font-weight: 600; margin: 0; }
+  @media (prefers-color-scheme: dark) { #error { color: #ff8a80; } }
+
+  /* Results */
+  #results { margin-top: 2rem; scroll-margin-top: 4rem; }
+  #results[hidden] { display: none; }
+  #results h2 { font-size: 1.8rem; margin: 0 0 .25rem; }
+  .result-note { margin: 0 0 1.25rem; max-width: 40rem; }
+  .score-row { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: .8rem 1rem; margin-bottom: .6rem; border-left: 6px solid var(--accent); }
+  .score-top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .score-top b { font-size: 1.05rem; }
+  .meter { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; margin: .5rem 0 .35rem; }
+  .meter > span { display: block; height: 100%; background: var(--accent); }
+  .band-label { font-size: .9rem; color: var(--muted); }
+  .band-label strong { color: var(--ink); }
+  .key-title { margin: 1.5rem 0 .6rem; font-size: 1.1rem; }
+  .bands { margin-bottom: 0; }
+  .handout-link { display: inline-block; margin-top: .4rem; font-weight: 700; color: var(--accent); }
+  .handout-link:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .score-row.top { background: var(--tint); border-width: 2px; border-left-width: 8px; }
+  .start-tag { display: inline-block; background: var(--accent); color: #fff; font-size: .8rem; font-weight: 700; border-radius: 99px; padding: .05rem .6rem; margin-left: .5rem; }
+
+  /* Handout dropdowns */
+  details.focus-d { margin-top: .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+  details.focus-d > summary { cursor: pointer; padding: .7rem 1rem; font-weight: 700; color: var(--accent); list-style-position: inside; }
+  details.focus-d > summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  details.focus-d[open] > summary { border-bottom: 1px solid var(--line); }
+  .handout { padding: 1rem; }
+  .handout .hintro { margin: 0 0 1.25rem; color: var(--muted); }
+  .handout section { margin-bottom: 1.75rem; }
+  .handout section:last-child { margin-bottom: 0; }
+  .handout h4 { margin: 0 0 .25rem; font-size: 1.15rem; display: flex; gap: .55rem; align-items: center; color: var(--ink); }
+  .handout h4 .n { flex: none; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: var(--accent); color: var(--on); display: grid; place-items: center; font-size: .9rem; }
+  .handout .note { margin: 0 0 .7rem; color: var(--muted); }
+  .handout .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: .6rem; }
+  .handout .twocol { grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+  .handout .card { background: var(--bg); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 10px; padding: .7rem .9rem; }
+  .handout .card b { display: block; }
+  .handout .card .num { display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); font-size: .8rem; font-weight: 700; margin-right: .45rem; }
+  .handout .list { list-style: none; margin: 0; padding: .9rem 1rem; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; display: grid; gap: .65rem; }
+  .handout .list.grid { display: grid; }
+  .handout .list li { padding-left: 1.1rem; position: relative; }
+  .handout .list li::before { content: ""; position: absolute; left: 0; top: .6em; width: .5rem; height: .5rem; background: var(--accent); border-radius: 2px; }
+  .handout .tblwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  .handout table { border-collapse: collapse; width: 100%; min-width: 28rem; }
+  .handout th, .handout td { text-align: left; padding: .55rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .handout thead th { background: var(--tint); border-bottom: 2px solid var(--accent); }
+  .handout tbody th { font-weight: 700; }
+  .handout tr:last-child th, .handout tr:last-child td { border-bottom: 0; }
+  .handout .call { background: var(--accent); color: var(--on); border-radius: 12px; padding: .9rem 1.1rem; }
+  .handout .call h3 { margin: 0 0 .35rem; font-size: 1.05rem; }
+  .handout .call p { margin: .3rem 0; }
+  .handout .flow { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: .8rem; }
+  .handout .flow span { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: .35rem .75rem; font-weight: 600; }
+  .handout .flow span.dark { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .handout .flow span.arrow { border: 0; background: none; padding: 0; }
+  .focus-grid { display: grid; gap: .9rem; margin-top: 1.25rem; }
+  .focus { border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .focus h3 { margin: 0; padding: .55rem 1rem; background: var(--accent); color: #fff; font-size: 1rem; }
+  @media (prefers-color-scheme: dark) { .focus h3 { color: #11161d; } }
+  .focus div { padding: .8rem 1rem; }
+  .focus .num { font-size: .85rem; color: var(--muted); display: block; }
+  .focus .title { font-weight: 800; font-size: 1.2rem; }
+  .disclaimer { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .92rem; }
+  footer { max-width: 52rem; margin: 0 auto; padding: 1rem 1.25rem 2rem; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); }
+
+  .a { --accent: var(--a); --tint: var(--a-tint); }
+  .b { --accent: var(--b); --tint: var(--b-tint); }
+  .c { --accent: var(--c); --tint: var(--c-tint); }
+  .d { --accent: var(--d); --tint: var(--d-tint); }
+
+  @media print {
+    .progress, .actions { display: none; }
+    body { background: #fff; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .bar > span { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="program">Targeting Literacy Strategies</p>
+    <h1>Reading Self-Check</h1>
+    <p class="sub">What slows you down most when you read? Find out in two minutes.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="intro">Read each statement and choose the number that fits you best <strong>most of the time</strong> when you read course materials. There are no right or wrong answers.</p>
+
+
+
+  <div class="progress" role="status" aria-live="polite">
+    <div class="progress-row"><span id="progressText">0 of 20 answered</span><span></span></div>
+    <div class="bar"><span id="progressBar"></span></div>
+  </div>
+
+  <form id="quiz" novalidate></form>
+
+  <div class="actions">
+    <button type="button" class="primary" id="submitBtn">See my results</button>
+    <button type="button" class="secondary" id="resetBtn">Start over</button>
+    <p id="error" role="alert"></p>
+  </div>
+
+  <section id="results" hidden tabindex="-1" aria-labelledby="resultsTitle">
+    <h2 id="resultsTitle">Your results</h2>
+    <p class="result-note" id="resultNote"></p>
+    <div id="scores"></div>
+    <h3 class="key-title">What the totals mean</h3>
+    <div class="bands" aria-label="How section totals are interpreted">
+      <div class="band low"><strong class="range">5 to 9</strong><strong>Mostly a strength.</strong> Keep doing what works.</div>
+      <div class="band mid"><strong class="range">10 to 14</strong><strong>A sometimes challenge.</strong> Try one or two strategies.</div>
+      <div class="band high"><strong class="range">15 to 20</strong><strong>A priority.</strong> Start here.</div>
+    </div>
+    <p class="disclaimer">This check is a starting point for choosing strategies, not a test or a diagnosis. If reading feels hard despite trying strategies, your campus tutoring or accessibility services staff can help with next steps.</p>
+    <div class="actions">
+      <button type="button" class="secondary" id="retakeBtn">Retake the check</button>
+      <button type="button" class="secondary" id="printBtn">Print results</button>
+    </div>
+  </section>
+</main>
+
+<footer>St. Charles Community College</footer>
+
+<script>
+(function () {
+  var SECTIONS = [
+    { id: "A", cls: "a", name: "Vocabulary", focus: 1, focusTitle: "Tackling Unfamiliar Vocabulary", items: [
+      "I skip medical terms I don\u2019t know and keep going.",
+      "I don\u2019t know how to figure out a word\u2019s meaning without looking it up.",
+      "Similar-looking terms (like hypertension and hypotension) blur together.",
+      "I forget new terms soon after I look them up.",
+      "Unfamiliar words make me stop reading or lose interest."
+    ]},
+    { id: "B", cls: "b", name: "Comprehension", focus: 2, focusTitle: "Making Sense of Complex Textbooks", items: [
+      "I finish a page and can\u2019t say what it was mainly about.",
+      "I reread the same paragraph several times before it makes sense.",
+      "Long, packed textbook sentences confuse me.",
+      "I can\u2019t tell which ideas are the most important.",
+      "I understand the lecture better than the textbook."
+    ]},
+    { id: "C", cls: "c", name: "Stamina", focus: 3, focusTitle: "Building Reading Stamina and Fluency", items: [
+      "My attention drifts after about 10 to 15 minutes.",
+      "I put off long reading assignments or don\u2019t finish them.",
+      "My mind or eyes feel tired quickly during a long reading session.",
+      "I read slowly and run out of time to finish.",
+      "My phone or surroundings pull me away from reading."
+    ]},
+    { id: "D", cls: "d", name: "Critical thinking", focus: 4, focusTitle: "Thinking Critically and Engaging With What You Read", items: [
+      "I read just to get finished, not to question or understand.",
+      "I can\u2019t remember the details a day or two later.",
+      "I have trouble connecting a reading to what I already know or to my future career.",
+      "I accept what the text says without asking for evidence or reasons.",
+      "I struggle to apply what I read to case studies or test questions."
+    ]}
+  ];
+  var LABELS = ["Rarely true for me", "Sometimes", "Often", "Almost always true for me"];
+  var TOTAL = 20;
+var FOCI = {
+1: { name:"Vocabulary", color:"#0f6e63", dark:"#4fc4b3", tint:"#e1f0ed", title:"Tackling Unfamiliar Vocabulary",
+ intro:"Medical terms look intimidating, but most are built from a small set of reusable parts. Learn a few strategies and you can decode words you’ve never seen.",
+ secs:[
+ {t:"Use the Word Attack routine", n:"When you hit a word you don’t know, work through these steps before reaching for a dictionary.", k:"steps", d:[
+  ["Pause and circle it","Don’t skip it. Mark it so you can come back."],
+  ["Break it into parts","Look for a prefix, a root, and a suffix."],
+  ["Check the sentence","Look for clues in the words and sentences nearby."],
+  ["Make a guess","Say the meaning in your own words."],
+  ["Confirm it","Check the glossary, a medical dictionary, or your instructor’s notes."],
+  ["Record it","Write it in your vocabulary log (see step 5)."]]},
+ {t:"Learn common word parts", n:"Most medical terms combine Greek and Latin parts. Learn these and you can decode dozens of terms.", k:"table", h:["Part","Meaning","Example"], d:[
+  ["hyper- (prefix)","above, too much","hypertension: high blood pressure"],
+  ["hypo- (prefix)","below, too little","hypoglycemia: low blood sugar"],
+  ["tachy- (prefix)","fast","tachycardia: fast heart rate"],
+  ["brady- (prefix)","slow","bradycardia: slow heart rate"],
+  ["a-, an- (prefix)","without, not","anemia: without enough blood (red cells)"],
+  ["cardi/o (root)","heart","cardiology: study of the heart"],
+  ["hepat/o (root)","liver","hepatitis: liver inflammation"],
+  ["nephr/o (root)","kidney","nephritis: kidney inflammation"],
+  ["-itis (suffix)","inflammation","arthritis: joint inflammation"],
+  ["-ectomy (suffix)","surgical removal","appendectomy: removal of the appendix"],
+  ["-ology (suffix)","study of","neurology: study of the nervous system"],
+  ["-emia (suffix)","blood condition","leukemia: cancer of the blood-forming tissues"]],
+  after:{k:"call", t:"Try it", d:["What might hyperglycemia mean?","hyper- (too much) + glyc (sugar) + -emia (in the blood)"]}},
+ {t:"Hunt for context clues", n:"The sentence around an unknown word often explains it.", k:"table", h:["Clue","What to look for"], d:[
+  ["Definition","The author states the meaning right after the term, often set off by commas, dashes, or parentheses."],
+  ["Example","Words like such as, for example, or including introduce examples that hint at meaning."],
+  ["Contrast","Words like but, however, or unlike signal an opposite meaning."],
+  ["Restatement","Words like in other words or that is repeat the idea more simply."],
+  ["Bold or italics","Textbooks often highlight key terms and define them nearby or in the margin."]]},
+ {t:"Use the book’s built-in help", k:"cards", d:[
+  ["Key terms and glossary","Check the chapter’s key-term list and the glossary at the back."],
+  ["Figures and diagrams","Read figure captions and labeled diagrams. A picture can make a term concrete."],
+  ["Chapter objectives","Look at the chapter objectives for the terms you’re expected to know."]]},
+ {t:"Keep a vocabulary log", n:"Use a notebook, index cards, or a notes app. Here is an example entry.", k:"table", h:["Term","Word parts","My own definition","Example or sketch"], d:[
+  ["tachycardia","tachy- (fast) + card (heart) + -ia (condition)","heart beating too fast","resting heart rate over 100"]]},
+ {t:"Practice terms so they stick", k:"cards", d:[
+  ["Space it out","Review 5 to 10 minutes a day instead of one long cram session."],
+  ["Quiz yourself","Cover the definition and try to say it first, or use flashcards."],
+  ["Say it aloud","Pronounce the term and use it in a sentence."],
+  ["Group related terms","Sort terms by body system, or by prefix or suffix."],
+  ["Study with a partner","Take turns defining terms for each other without looking."]]},
+ {k:"call", t:"Keep in mind", d:["Don’t skip unknown words. Each one is a clue to a bigger idea.","Don’t panic over long words. Break them into parts.","Ask for help. Your instructor, tutor, or librarian would rather answer a vocabulary question than have you guess."]}
+ ]},
+2: { name:"Comprehension", color:"#2a5599", dark:"#7ea6ec", tint:"#e3eaf6", title:"Making Sense of Complex Textbooks",
+ intro:"College textbooks pack a lot of ideas into every page. Reading them well takes a plan, not just more time. Use these strategies before, during, and after you read.",
+ secs:[
+ {t:"Before: Preview", n:"Spend 3 to 5 minutes getting the lay of the land. A brain that knows what’s coming reads more easily.", k:"list", d:[
+  ["Read the title, headings, and subheadings.","They are the outline of the chapter."],
+  ["Read the learning objectives and the summary.","They tell you what matters most."],
+  ["Scan bold terms, charts, and images.","Notice what the visuals show."],
+  ["Turn headings into questions.","“Causes of Heart Failure” becomes “What causes heart failure?” Read to answer it."],
+  ["Ask what you already know.","Jot down 2 or 3 things you remember about the topic."]]},
+ {t:"While: Chunk and check", k:"list", two:1, d:[
+  ["Read in small chunks.","Work one paragraph or one short section at a time, not the whole chapter in one push."],
+  ["Find the main idea.","After each paragraph, ask: What is the point of this paragraph? Often it’s in the first or last sentence."],
+  ["Spot signal words.","Words like because, therefore, first, however, and in contrast show how ideas connect."],
+  ["Break up long sentences.","Find the subject (who or what) and the verb (what happened). Then add the details back in."],
+  ["Paraphrase out loud or in the margin.","Say it in your own words. If you can’t, reread that part."],
+  ["Annotate actively.","Underline only the key idea, circle terms, and write short notes in the margin. If everything is highlighted, nothing stands out."],
+  ["Use the visuals.","Study each chart or diagram and say what it shows. Then connect it to the text."],
+  ["Slow down on purpose.","When you hit a hard paragraph, slow your pace and reread instead of pushing on."]]},
+ {t:"When stuck: Repair strategies", k:"table", h:["If this happens…","Try this"], d:[
+  ["A paragraph makes no sense","Reread it slowly, then read the next paragraph for clues."],
+  ["Too many new terms","Pause and define the key terms first, then reread."],
+  ["You lose the thread","Go back to the last point you understood and restart there."],
+  ["The topic is too new","Watch a short video or read a simpler overview first, then return to the textbook."],
+  ["It still isn’t clicking","Write down your question and take it to your instructor or a tutor."]]},
+ {t:"After: Summarize and check", k:"list", two:1, d:[
+  ["Write a 2 to 3 sentence summary","of the section without looking at the text."],
+  ["Answer your heading questions","from the preview step."],
+  ["Make a quick map.","Sketch a simple outline, concept map, or flowchart of how the ideas connect."],
+  ["Fix the gaps.","Go back to the parts that were confusing, or bring your questions to class or tutoring."]],
+  after:{k:"call", t:"Use the 3-2-1 check", d:["Write 3 things you learned, 2 things that were confusing, and 1 question you still have."]}},
+ {k:"call", t:"The 5-minute habit to start tomorrow", d:["Before your next reading assignment, spend 3 minutes previewing it. Afterward, spend 2 minutes writing a 2-sentence summary. Do it for one week and notice the difference."]}
+ ]},
+3: { name:"Stamina", color:"#b5501a", dark:"#f0955e", tint:"#f9e8dc", title:"Building Reading Stamina and Fluency",
+ intro:"Reading stamina works like physical fitness: you build it gradually with regular practice. Fluency, reading smoothly and at a comfortable pace, grows the same way. You don’t need to read for hours tomorrow. You need a plan that stretches you a little more each week.",
+ secs:[
+ {t:"Start where you are, then add time", k:"cards", d:[
+  ["Find your baseline.","Read something for the length of time you can stay focused. Note the minutes (for example, 10)."],
+  ["Add 2 to 5 minutes each week.","Small increases are easier to keep than big jumps."],
+  ["Track your progress.","Note how long you actually read each week and how you felt, 1 to 5."]],
+  after:{k:"table", h:["Week","Focused minutes (goal)"], d:[["1","My baseline"],["2","Baseline + 3"],["3","Baseline + 6"],["4","Baseline + 9"],["5","Baseline + 12"]]}},
+ {t:"Work in focused sprints with breaks", k:"flow", d:["Read: 20 to 25 minutes","Break: 5 minutes. Stand and stretch.","Repeat 3 or 4 times","!Longer break: 15 to 30 minutes"],
+  after:{k:"cards", d:[
+  ["Pick a sprint length.","Try 20 to 25 minutes of reading, then a 5-minute break. Lengthen sprints as your stamina grows."],
+  ["Use a timer.","Knowing a break is coming makes it easier to stay with the text."],
+  ["Break well.","Stand up, stretch, get water, or look out a window. Skip social media, which makes it harder to return."]]}},
+ {t:"Set up your reading space", k:"list", d:[
+  ["Pick one spot and time.","A routine tells your brain it’s time to focus."],
+  ["Silence your phone","or put it in another room, out of sight."],
+  ["Sit up with good light.","Reading in bed or on the couch invites sleepiness."],
+  ["Keep supplies close:","water, a pen, sticky notes, and your vocabulary log."],
+  ["Read when you’re sharpest.","Schedule the hardest readings for your best time of day."]]},
+ {t:"Keep your brain active", k:"list", d:[
+  ["Set a purpose for each sprint.","For example: “Find the 3 causes of this condition.”"],
+  ["Move while you read.","Use a pen to track lines, or stand while you review notes."],
+  ["Switch it up.","Alternate between reading, annotating, and summarizing so you aren’t doing one thing for too long."],
+  ["Reset when your mind wanders.","Notice it, take a breath, and reread the last sentence."]]},
+ {t:"Build fluency with practice", k:"list", d:[
+  ["Read a little every day.","Daily reading beats one marathon session."],
+  ["Reread important passages.","The second time through is faster and clearer."],
+  ["Read aloud for a few minutes.","It slows you down and shows where you stumble."],
+  ["Practice with easier text.","Articles, news stories, or a simpler overview of the topic build speed and confidence."],
+  ["Use audio alongside the text.","Following along while listening to an audiobook or audio textbook, if available, helps with pace and unfamiliar terms."]]},
+ {t:"Plan your assignments", k:"list", d:[
+  ["Break long readings into smaller pieces.","A 30-page chapter is six 5-page sections."],
+  ["Start early.","Open the reading the day it’s assigned and read a section or two."],
+  ["Plan the pages per day","based on your due date and put them on your calendar."],
+  ["Reward finished chunks.","A snack, a walk, or checking off a to-do counts."]]},
+ {k:"call", t:"Quick reminders", d:["Fatigue is normal. It means your reading muscles are working.","Progress won’t be perfectly steady, and that’s okay.","If you read slowly or tire quickly despite practice, or you struggle with eye strain or focus, talk to your campus accessibility or student support services. They can help."]}
+ ]},
+4: { name:"Critical thinking", color:"#6a3d8f", dark:"#c29be6", tint:"#ece3f3", title:"Thinking Critically and Engaging With What You Read",
+ intro:"Reading to remember and use information means doing more than moving your eyes across a page. These strategies help you question what you read, connect it to what you know, and practice using it.",
+ secs:[
+ {t:"Ask questions as you read", n:"Good readers constantly question the text.", k:"cards", d:[
+  ["","What is the author’s main point here?"],["","What evidence or reasons support it?"],["","How does this connect to what I already know?"],
+  ["","How might I use this in a clinical or real-world situation?"],["","What would happen if…? (a symptom changed, a step was skipped, a patient was older)"],["","What is still unclear to me?"]]},
+ {t:"Connect new ideas to what you know", k:"cards", d:[
+  ["Link to your experience.","Think of a patient, family member, or situation that matches."],
+  ["Link to other classes.","How does this connect to anatomy, pharmacology, or a prior unit?"],
+  ["Compare and contrast.","How is this condition or process similar to or different from one you already know?"],
+  ["Build cause-and-effect chains.","For example: infection → inflammation → fever → increased heart rate."]]},
+ {t:"Evaluate what you read", n:"Not every source is equally reliable. When you read a case study, article, or website, ask:", k:"table", h:["Question","What to look for"], d:[
+  ["Who wrote this?","Credentials, expertise, organization"],
+  ["Where was it published?","A textbook, peer-reviewed journal, or a professional or government site is stronger than a blog or social post"],
+  ["When was it published?","Health knowledge changes, so check for current information"],
+  ["What is the evidence?","Data, studies, and examples rather than opinion alone"],
+  ["What might be missing?","Other viewpoints, limits, or exceptions"]]},
+ {t:"Retrieve it, don’t just reread it", n:"Rereading feels productive but is one of the weakest ways to study. Pulling information out of your memory is stronger.", k:"list", d:[
+  ["Close the book and write down","everything you remember from the section. Then check what you missed."],
+  ["Turn headings and objectives into practice questions","and answer them from memory."],
+  ["Make flashcards","with a question on the front and the answer on the back."],
+  ["Teach it.","Explain the concept to a classmate, a friend, or an imaginary student."],
+  ["Space it out.","Review the material after 1 day, 3 days, and 1 week."]]},
+ {t:"Organize ideas visually", k:"cards", d:[
+  ["Concept map","Put the big idea in the center and branch out to related ideas."],
+  ["Flowchart","Show steps in a process, such as how a drug moves through the body."],
+  ["Comparison chart","Sort two or three conditions by cause, signs, and treatment."],
+  ["Timeline","Show the order of events in a disease or procedure."]]},
+ {t:"Apply it", k:"cards", d:[
+  ["Work practice problems and case studies","after each section."],
+  ["Write your own test questions","as if you were the instructor."],
+  ["Ask “so what?”","Finish this sentence: This matters because…"],
+  ["Make a decision.","If you were the nurse or technician in this scenario, what would you do next, and why?"]]},
+ {t:"Try this: the 4-step read-and-think routine", k:"steps", d:[
+  ["Preview","Skim headings and write one question you want answered."],
+  ["Read","Read one section while looking for the answer."],
+  ["Recall","Close the book and write what you remember in 2 or 3 sentences."],
+  ["Apply","Write one way you could use this idea in class, on an exam, or on the job."]]},
+ {k:"call", t:"Quick reminders", d:["Reading is a conversation. Talk back to the text.","Confusion is useful because it shows you what to review.","Understanding is not the same as remembering. Practice recalling and using ideas."]}
+ ]}
+};
+
+  function block(k, d, s) {
+    var h = "";
+    if (k === "steps" || k === "cards") {
+      h = '<div class="grid">' + d.map(function (x, i) {
+        return '<div class="card">' + (k === "steps" ? '<span class="num">' + (i + 1) + '</span>' : "") +
+          (x[0] ? '<b style="' + (k === "steps" ? "display:inline" : "") + '">' + x[0] + '</b> ' : "") + x[1] + '</div>';
+      }).join("") + '</div>';
+    } else if (k === "list") {
+      h = '<ul class="list' + (s && s.two ? ' grid twocol' : '') + '">' + d.map(function (x) {
+        return '<li><b>' + x[0] + '</b> ' + x[1] + '</li>';
+      }).join("") + '</ul>';
+    } else if (k === "table") {
+      h = '<div class="tblwrap"><table><thead><tr>' + (s.h || []).map(function (c) { return '<th scope="col">' + c + '</th>'; }).join("") +
+        '</tr></thead><tbody>' + d.map(function (r) {
+          return '<tr>' + r.map(function (c, j) { return j === 0 ? '<th scope="row" style="background:none;border-bottom:1px solid var(--line)">' + c + '</th>' : '<td>' + c + '</td>'; }).join("") + '</tr>';
+        }).join("") + '</tbody></table></div>';
+    } else if (k === "flow") {
+      h = '<div class="flow">' + d.map(function (x, i) {
+        var dk = x.charAt(0) === "!";
+        return (i ? '<span aria-hidden="true" class="arrow">\u2192</span>' : '') + '<span' + (dk ? ' class="dark"' : '') + '>' + (dk ? x.slice(1) : x) + '</span>';
+      }).join("") + '</div>';
+    } else if (k === "call") {
+      h = '<div class="call"><h3>' + s.t + '</h3>' + d.map(function (x) { return '<p>' + x + '</p>'; }).join("") + '</div>';
+    }
+    return h;
+  }
+
+  function handoutHTML(F) {
+    var out = '<p class="hintro">' + F.intro + '</p>', num = 0;
+    F.secs.forEach(function (s) {
+      if (s.k === "call") { out += '<section>' + block("call", s.d, s) + '</section>'; return; }
+      num++;
+      out += '<section><h4><span class="n" aria-hidden="true">' + num + '</span>' + s.t + '</h4>' +
+        (s.n ? '<p class="note">' + s.n + '</p>' : '') + block(s.k, s.d, s);
+      if (s.after) out += '<div style="margin-top:.8rem">' + block(s.after.k, s.after.d, s.after) + '</div>';
+      out += '</section>';
+    });
+    return out;
+  }
+
+
+  var form = document.getElementById("quiz");
+  var errorEl = document.getElementById("error");
+
+  // Build the form
+  SECTIONS.forEach(function (s) {
+    var sec = document.createElement("section");
+    sec.className = "sec " + s.cls;
+    var html = '<div class="sec-head"><span class="badge" aria-hidden="true">' + s.id + '</span>' +
+      '<h2>' + s.name + '</h2><span class="lead">When I read my course materials\u2026</span></div>' +
+      '<ul class="scale" aria-label="Answer scale"><li><b>1</b> Rarely true for me</li><li><b>2</b> Sometimes</li><li><b>3</b> Often</li><li><b>4</b> Almost always true for me</li></ul>';
+    s.items.forEach(function (text, i) {
+      var qid = s.id + (i + 1);
+      html += '<fieldset class="q" id="q-' + qid + '"><legend><span class="qtext"><span class="qid">' + qid +
+        '</span><span>' + text + '</span></span></legend><div class="opts">';
+      for (var v = 1; v <= 4; v++) {
+        html += '<label><input type="radio" name="' + qid + '" value="' + v + '" aria-label="' + qid + ': ' + v + ', ' + LABELS[v - 1] + '">' +
+          '<span aria-hidden="true">' + v + '</span></label>';
+      }
+      html += '</div></fieldset>';
+    });
+    html += '<div class="sec-foot">Section ' + s.id + ' total (5 to 20): <b id="tot-' + s.id + '">\u2013</b></div>';
+    sec.innerHTML = html;
+    form.appendChild(sec);
+  });
+
+  function answeredCount() {
+    return form.querySelectorAll("input:checked").length;
+  }
+
+  function sectionTotal(s) {
+    var sum = 0, n = 0;
+    for (var i = 1; i <= 5; i++) {
+      var c = form.querySelector('input[name="' + s.id + i + '"]:checked');
+      if (c) { sum += +c.value; n++; }
+    }
+    return { sum: sum, n: n };
+  }
+
+  function updateProgress() {
+    var n = answeredCount();
+    document.getElementById("progressText").textContent = n + " of " + TOTAL + " answered";
+    document.getElementById("progressBar").style.width = (n / TOTAL * 100) + "%";
+    SECTIONS.forEach(function (s) {
+      var t = sectionTotal(s);
+      document.getElementById("tot-" + s.id).textContent = t.n === 5 ? t.sum : "\u2013";
+    });
+  }
+
+  function bandFor(total) {
+    if (total <= 9) return "Mostly a strength. Keep doing what works.";
+    if (total <= 14) return "A sometimes challenge. Try one or two strategies.";
+    return "A priority. Start here.";
+  }
+  function bandName(total) {
+    if (total <= 9) return "Mostly a strength";
+    if (total <= 14) return "A sometimes challenge";
+    return "A priority";
+  }
+
+  form.addEventListener("change", function (e) {
+    var fs = e.target.closest("fieldset");
+    if (fs) fs.classList.remove("missing");
+    errorEl.textContent = "";
+    updateProgress();
+  });
+
+  document.getElementById("submitBtn").addEventListener("click", function () {
+    var missing = [];
+    SECTIONS.forEach(function (s) {
+      for (var i = 1; i <= 5; i++) {
+        var id = s.id + i;
+        var fs = document.getElementById("q-" + id);
+        if (!form.querySelector('input[name="' + id + '"]:checked')) {
+          fs.classList.add("missing");
+          missing.push(fs);
+        }
+      }
+    });
+    if (missing.length) {
+      errorEl.textContent = missing.length === 1
+        ? "One statement still needs an answer. It is highlighted above."
+        : missing.length + " statements still need an answer. They are highlighted above.";
+      missing[0].scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    showResults();
+  });
+
+  function showResults() {
+    var totals = SECTIONS.map(function (s) { return { s: s, total: sectionTotal(s).sum }; });
+    var max = Math.max.apply(null, totals.map(function (t) { return t.total; }));
+    var top = totals.filter(function (t) { return t.total === max; });
+
+    var note = document.getElementById("resultNote");
+    if (top.length === 1) {
+      note.textContent = "Your highest total is " + top[0].s.name + " (" + max + "). That is the skill to work on first. Your handouts are listed below, starting with the one that fits you best. Tap a title to open or close it.";
+    } else {
+      note.textContent = "You have a tie between " + top.map(function (t) { return t.s.name; }).join(" and ") +
+        " (" + max + " each). Pick whichever feels most frustrating this week. All four handouts are listed below, highest totals first. Tap a title to open or close it.";
+    }
+
+    var order = totals.map(function (t, i) { t.i = i; return t; })
+      .sort(function (a, b) { return b.total - a.total || a.i - b.i; });
+    var scores = document.getElementById("scores");
+    scores.innerHTML = "";
+    order.forEach(function (t, idx) {
+      var isTop = t.total === max;
+      var pct = ((t.total - 5) / 15) * 100;
+      var row = document.createElement("div");
+      row.className = "score-row " + t.s.cls + (isTop ? " top" : "");
+      row.innerHTML = '<div class="score-top"><b>' + (idx + 1) + '. ' + t.s.name + (isTop ? '<span class="start-tag">Start here</span>' : '') + '</b><span>' + t.total + ' of 20</span></div>' +
+        '<div class="meter" role="img" aria-label="' + t.total + ' out of 20"><span style="width:' + Math.max(pct, 4) + '%"></span></div>' +
+        '<div class="band-label"><strong>' + bandName(t.total) + '.</strong> ' + bandFor(t.total).split(". ").slice(1).join(". ") + '</div>' +
+        '<details class="focus-d"' + (idx === 0 ? ' open' : '') + '><summary>Literacy Focus ' + t.s.focus + ': ' + t.s.focusTitle + '</summary><div class="handout">' + handoutHTML(FOCI[t.s.focus]) + '</div></details>';
+      scores.appendChild(row);
+    });
+
+    var r = document.getElementById("results");
+    r.hidden = false;
+    r.scrollIntoView({ behavior: "smooth", block: "start" });
+    r.focus({ preventScroll: true });
+  }
+
+  function reset() {
+    form.reset();
+    form.querySelectorAll(".missing").forEach(function (el) { el.classList.remove("missing"); });
+    document.getElementById("results").hidden = true;
+    errorEl.textContent = "";
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  document.getElementById("resetBtn").addEventListener("click", reset);
+  document.getElementById("retakeBtn").addEventListener("click", reset);
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
